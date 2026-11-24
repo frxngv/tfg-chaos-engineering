@@ -38,8 +38,9 @@ that WSL is broken on the laptop.
    the user verification below.
 2. Direct Python execution, application image build, container execution, and
    lifecycle checks: completed; see the Lesson 01 user verification below.
-3. The resulting application image ID: still to be recorded. The user's Python
-   version and the observed HTTP behavior are recorded below.
+3. The resulting application image ID and container recreation: completed; see
+   the recreation check below. The user's Python version and HTTP behavior are
+   also recorded.
 4. Later, resource measurements for a minimal Kubernetes deployment.
 
 At the initial inspection, no container build had been completed. Fault
@@ -133,8 +134,9 @@ The observed container response was:
 The local Python interpreter was version 3.14.4, whereas the Dockerfile selects
 the separate Python 3.12 image family. These checks demonstrate basic execution
 in both environments; they are not a general cross-version compatibility study.
-The full image ID and exact Python patch version inside the image have not been
-collected. Native-run hostname and raw JSON were not captured in the evidence.
+The full image ID was subsequently recorded in the recreation check below. The
+exact Python patch version inside the image has not been collected. Native-run
+hostname and raw JSON were not captured in the evidence.
 
 ### Findings and next step
 
@@ -143,5 +145,32 @@ collected. Native-run hostname and raw JSON were not captured in the evidence.
 - The running application's logs can be inspected using Docker.
 - Removing the container leaves the image available for another run.
 - This result does not establish Kubernetes or microservices benchmark capacity.
-- Next: record the image ID, then create another container from the same image
-  without rebuilding it. Multiple replicas and traffic distribution will follow.
+- The recreation check below completes the first lesson's execution steps.
+  Multiple simultaneous replicas and traffic distribution remain untested.
+
+### Image identity and container recreation - 2026-11-24
+
+After being instructed to inspect the image and create another container from
+the existing tag without rebuilding it, the user supplied this image ID in chat:
+
+```text
+sha256:ed597ae786096700a3a8531ee18552791327dea6bcebc0ad4bfe536467f25edb
+```
+
+The user also shared a browser screenshot showing this response:
+
+```json
+{"message": "Hello from the TFG application!", "instance": "3aee0cb33eea"}
+```
+
+The message is unchanged and the instance hostname differs from the first
+container's `eec264b69abd`. This is consistent with creating a new container
+from the existing application image. No image ID was captured before the first
+run, so this is not a before/after comparison of image IDs.
+
+The image ID identifies the local application image content. It is separate
+from both the container hostname and a registry repository digest.
+
+Lesson 01 execution is complete. The final shutdown of the recreated container
+has not yet been confirmed. Next: stop that container, then study simultaneous
+replicas and the distinction between host ports and container ports.

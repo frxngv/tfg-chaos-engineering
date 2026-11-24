@@ -9,10 +9,12 @@ The final benchmark application and experimental scope have not been selected ye
 
 ## Current stage
 
-The user has verified direct Python execution, Docker image construction,
-container HTTP access, logs, and container cleanup in Lesson 01. Image identity
-recording and a second container creation are the next steps before studying
-replicas. Kubernetes, monitoring, and fault injection have not been tested yet.
+Lesson 01 has been completed: the user has verified direct Python execution,
+Docker image construction, container HTTP access, logs, container cleanup, and
+creation of another container from the existing image. Its image ID is recorded
+in the study log. The recreated container's final shutdown is still pending.
+The next lesson will introduce simultaneous replicas and ports. Kubernetes,
+monitoring, and fault injection have not been tested yet.
 
 The small application in the first lesson is a learning exercise; the final
 resilience study will use an existing microservices application. See the study
