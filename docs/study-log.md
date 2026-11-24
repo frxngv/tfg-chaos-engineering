@@ -174,3 +174,16 @@ from both the container hostname and a registry repository digest.
 Lesson 01 execution is complete. The final shutdown of the recreated container
 has not yet been confirmed. Next: stop that container, then study simultaneous
 replicas and the distinction between host ports and container ports.
+
+## Lesson 02: planned exercise - 2026-11-24
+
+The [second lesson](../lessons/02-replicas-and-ports/README.md) has been prepared
+for guided execution. It reuses the existing image and introduces two detached
+containers with separate published host ports, inspection of their image IDs,
+a manual stop of one replica, independent endpoint checks, manual replacement,
+and cleanup.
+
+All Lesson 02 execution results are pending. This guide does not yet configure
+a shared entry point, automatic traffic redistribution, or automatic replica
+replacement. No deployment or fault experiment has been performed by the
+assistant for this lesson.

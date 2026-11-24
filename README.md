@@ -13,8 +13,9 @@ Lesson 01 has been completed: the user has verified direct Python execution,
 Docker image construction, container HTTP access, logs, container cleanup, and
 creation of another container from the existing image. Its image ID is recorded
 in the study log. The recreated container's final shutdown is still pending.
-The next lesson will introduce simultaneous replicas and ports. Kubernetes,
-monitoring, and fault injection have not been tested yet.
+Lesson 02 is now available and introduces simultaneous replicas and ports; its
+execution results are pending. Kubernetes, monitoring, and fault injection have
+not been tested yet.
 
 The small application in the first lesson is a learning exercise; the final
 resilience study will use an existing microservices application. See the study
@@ -23,6 +24,7 @@ log for observations and their limitations.
 ## Contents
 
 - [Lesson 01: Python application and Docker](lessons/01-containers/README.md)
+- [Lesson 02: Two replicas and port publishing](lessons/02-replicas-and-ports/README.md)
 - [Feasibility study log](docs/study-log.md)
 
 ## Working method
