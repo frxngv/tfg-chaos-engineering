@@ -183,7 +183,79 @@ containers with separate published host ports, inspection of their image IDs,
 a manual stop of one replica, independent endpoint checks, manual replacement,
 and cleanup.
 
-All Lesson 02 execution results are pending. This guide does not yet configure
-a shared entry point, automatic traffic redistribution, or automatic replica
-replacement. No deployment or fault experiment has been performed by the
-assistant for this lesson.
+At preparation time, all execution results were pending. The user subsequently
+performed the checks recorded below. This guide does not configure a shared
+entry point, automatic traffic redistribution, or automatic replica replacement.
+The assistant has not run the lesson's containers on the user's behalf.
+
+## Lesson 02: user verification - 2026-11-24
+
+The user shared screenshots of the commands and responses while following the
+exercise. The following are observed results, not expected output copied from
+the guide.
+
+### Initial replicas and image identity
+
+The starting `docker ps` output showed no running containers. The user then
+created two containers with `docker run -d --rm`, using `tfg-hello:lesson-01`:
+
+| Container | Initial hostname | Published host endpoint | Internal application port |
+| --- | --- | --- | --- |
+| `tfg-replica-a` | `3e2c39b77530` | `127.0.0.1:8001` | 8000/TCP |
+| `tfg-replica-b` | `e66b9c1c39d0` | `127.0.0.1:8002` | 8000/TCP |
+
+Both browser endpoints returned the application message with their respective
+hostnames. The container listing showed both instances running simultaneously.
+
+The user checked their image identities with:
+
+```powershell
+docker inspect --format '{{.Name}} -> {{.Image}}' tfg-replica-a tfg-replica-b
+```
+
+Both containers referenced the same image ID, also matching the Lesson 01 value:
+
+```text
+sha256:ed597ae786096700a3a8531ee18552791327dea6bcebc0ad4bfe536467f25edb
+```
+
+### Manual stop and independent endpoint checks
+
+The user ran `docker stop tfg-replica-a`, which returned the container name, then
+made fresh requests using `Invoke-RestMethod` with a three-second timeout.
+
+| Request after stopping A | Observed result |
+| --- | --- |
+| `http://localhost:8001/` | PowerShell reported that the operation exceeded its timeout |
+| `http://localhost:8002/` | Application message returned with instance `e66b9c1c39d0` |
+
+The timeout was a client-side request failure, not an HTTP error response from
+the application. B remained reachable at its separate endpoint. Requests to A's
+published port were not automatically redirected to B.
+
+### Manual replacement
+
+The user explicitly created another container named `tfg-replica-a` from the
+existing image tag, again publishing host port 8001 to container port 8000.
+The subsequent request to port 8001 returned:
+
+```json
+{"message": "Hello from the TFG application!", "instance": "994d5d2b84e0"}
+```
+
+The new hostname differed from the original A. A subsequent `docker ps` output
+showed the new A and the original B running simultaneously with their expected
+port mappings. The image ID of the replacement A was not separately inspected.
+
+### Findings and remaining checks
+
+- Two instances of this small application ran simultaneously on the laptop.
+- Both instances used the same image while exposing different host ports.
+- During the observed manual stop of A, B continued serving a direct request.
+- An explicit creation command restored access through A's host port.
+- There was no automatic failover or controller maintaining a replica count.
+- This was a controlled manual stop and manual recovery, not an automated chaos
+  experiment. Availability and recovery time have not been measured.
+- Cleanup of the two running replicas has not yet been confirmed. Their separate
+  application logs were not supplied as part of the Lesson 02 evidence.
+- Kubernetes capacity and behavior remain to be evaluated in the next stage.

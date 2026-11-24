@@ -9,13 +9,13 @@ The final benchmark application and experimental scope have not been selected ye
 
 ## Current stage
 
-Lesson 01 has been completed: the user has verified direct Python execution,
-Docker image construction, container HTTP access, logs, container cleanup, and
-creation of another container from the existing image. Its image ID is recorded
-in the study log. The recreated container's final shutdown is still pending.
-Lesson 02 is now available and introduces simultaneous replicas and ports; its
-execution results are pending. Kubernetes, monitoring, and fault injection have
-not been tested yet.
+Lesson 01 has been completed. In Lesson 02, the user has verified two simultaneous
+containers using the same image, separate published ports, continued access to B
+after manually stopping A, and successful manual replacement of A. Final cleanup
+of the two replicas is pending. Observations are recorded in the study log.
+
+Automatic traffic redistribution and replica replacement have not been configured.
+Kubernetes, monitoring, and automated fault injection have not been tested yet.
 
 The small application in the first lesson is a learning exercise; the final
 resilience study will use an existing microservices application. See the study
