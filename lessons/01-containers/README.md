@@ -112,6 +112,36 @@ Stop it gracefully from the second terminal:
 docker stop tfg-hello
 ```
 
+Check the container and image afterwards:
+
+```powershell
+docker ps -a --filter name=tfg-hello
+docker image ls tfg-hello
+```
+
+Because `--rm` was used, the filtered container listing should contain no matching
+container. The image should still be listed: removing a container does not remove
+the image it was created from.
+
+## 7. Create another container from the same image
+
+Record the full application image ID if it has not been recorded yet:
+
+```powershell
+docker image inspect tfg-hello:lesson-01 --format '{{.Id}}'
+```
+
+Then reuse the existing image without running `docker build` again:
+
+```powershell
+docker run --rm --name tfg-hello -p 127.0.0.1:8000:8000 tfg-hello:lesson-01
+```
+
+Visit <http://localhost:8000/> and compare the instance hostname with the previous
+run. By default, the new container gets a new identity even though its image and
+application message are unchanged. Stop it from a second terminal with
+`docker stop tfg-hello` when finished.
+
 ## Record the result
 
 Keep expected output separate from your observations. For this exercise, record:

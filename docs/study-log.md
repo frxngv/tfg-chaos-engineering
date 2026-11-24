@@ -36,12 +36,14 @@ that WSL is broken on the laptop.
 
 1. Docker client/server connectivity and a first container run: completed; see
    the user verification below.
-2. Successful execution of the lesson directly with Python and inside Docker.
-3. The Python version, Docker image ID, and observed HTTP responses.
+2. Direct Python execution, application image build, container execution, and
+   lifecycle checks: completed; see the Lesson 01 user verification below.
+3. The resulting application image ID: still to be recorded. The user's Python
+   version and the observed HTTP behavior are recorded below.
 4. Later, resource measurements for a minimal Kubernetes deployment.
 
-No container build, fault injection, availability measurement, or recovery-time
-measurement has been completed at this stage.
+At the initial inspection, no container build had been completed. Fault
+injection, availability measurement, and recovery-time measurement remain pending.
 
 ## Lesson 01: assistant verification - 2026-11-24
 
@@ -58,9 +60,9 @@ interpreter, sent HTTP requests, and stopped the test process afterwards.
 The first HTTP check was blocked by the assistant's restricted execution
 environment. The successful rerun used approved execution outside that sandbox.
 This does not establish whether the user's `python` command is configured.
-The Dockerfile has been prepared but its build and container execution remain
-unverified because the Docker Engine was not reachable during inspection.
-The user's step-by-step execution of the lesson is still pending.
+At the time of this assistant check, the Dockerfile build and container execution
+were unverified because the Docker Engine was not reachable during inspection.
+The later user verification is recorded below.
 
 ## Docker: user verification - 2026-11-24
 
@@ -100,5 +102,46 @@ publishing a web port, Kubernetes, or the capacity of the laptop for the full
 experiment stack. The `latest` tag is mutable; no fixed image digest is recorded
 for this exercise.
 
-The next user check is whether a Python interpreter is available in PowerShell,
-followed by direct execution of the lesson application.
+The next checks at this point were Python availability and direct execution of
+the lesson application; their results are recorded below.
+
+## Lesson 01: user verification - 2026-11-24
+
+The user followed the exercise step by step. Screenshots show the Python version,
+direct-run HTTP logs, successful image build, container JSON response, container
+listing, and container logs. The user subsequently confirmed the expected stop
+and image-persistence results in chat.
+
+| Check | Observed result | Evidence |
+| --- | --- | --- |
+| `python --version` | Python 3.14.4 available in PowerShell | User screenshot |
+| Direct Python execution | Server listening on port 8000; `GET /` returned HTTP 200 | User screenshot |
+| Browser icon request | `GET /favicon.ico` returned HTTP 404, consistent with the implemented routes | User screenshot |
+| `docker build -t tfg-hello:lesson-01 .` | Build finished successfully using `python:3.12-slim` | User screenshot |
+| Container HTTP response | Expected message and instance hostname `eec264b69abd` | User screenshot |
+| `docker ps --filter name=tfg-hello` | Container running from `tfg-hello:lesson-01`, command `python -u app.py`, port mapping `127.0.0.1:8000->8000/tcp` | User screenshot |
+| `docker logs tfg-hello` | Startup message and `GET /` with HTTP 200 | User screenshot |
+| `docker stop tfg-hello`, then filtered `docker ps -a` | Container stopped and no matching container remained, as expected with `--rm` | User confirmation in chat |
+| `docker image ls tfg-hello` | Application image remained after the container was removed | User confirmation in chat |
+
+The observed container response was:
+
+```json
+{"message": "Hello from the TFG application!", "instance": "eec264b69abd"}
+```
+
+The local Python interpreter was version 3.14.4, whereas the Dockerfile selects
+the separate Python 3.12 image family. These checks demonstrate basic execution
+in both environments; they are not a general cross-version compatibility study.
+The full image ID and exact Python patch version inside the image have not been
+collected. Native-run hostname and raw JSON were not captured in the evidence.
+
+### Findings and next step
+
+- The laptop can build and run this small application image and publish its HTTP
+  port locally.
+- The running application's logs can be inspected using Docker.
+- Removing the container leaves the image available for another run.
+- This result does not establish Kubernetes or microservices benchmark capacity.
+- Next: record the image ID, then create another container from the same image
+  without rebuilding it. Multiple replicas and traffic distribution will follow.

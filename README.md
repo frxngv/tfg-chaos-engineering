@@ -9,9 +9,14 @@ The final benchmark application and experimental scope have not been selected ye
 
 ## Current stage
 
-We are starting with containers before introducing Kubernetes, monitoring, or
-fault injection. The small application in the first lesson is a learning exercise;
-the final resilience study will use an existing microservices application.
+The user has verified direct Python execution, Docker image construction,
+container HTTP access, logs, and container cleanup in Lesson 01. Image identity
+recording and a second container creation are the next steps before studying
+replicas. Kubernetes, monitoring, and fault injection have not been tested yet.
+
+The small application in the first lesson is a learning exercise; the final
+resilience study will use an existing microservices application. See the study
+log for observations and their limitations.
 
 ## Contents
 
